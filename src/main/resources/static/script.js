@@ -2,6 +2,7 @@
 
 let oldValueRotary, oldValuePresence;
 
+// stop polling var
 let stopPollingRotary = false, stopPollingPresenceSensor = false, stopPollingRfid = false, scen5RealTimecheck = false;
 
 let scene = 0; // 0 debug, scen 1, scen 2, scen 3 ...
