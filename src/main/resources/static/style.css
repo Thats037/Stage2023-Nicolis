@@ -1,0 +1,51 @@
+@use "@material/tab-bar/mdc-tab-bar";
+@use "@material/tab-scroller/mdc-tab-scroller";
+@use "@material/tab-indicator/mdc-tab-indicator";
+@use "@material/tab/mdc-tab";
+
+#colorsLed td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    width: 30px;
+}
+
+#distAB {
+    background-color: #FFFFFF;
+}
+#dist01 {
+    background-color: #00C4F0;
+}
+#dist02 {
+    background-color: #00F0A1;
+}
+#dist03 {
+    background-color: #01F01D;
+}
+#dist04 {
+    background-color: #A7F000;
+}
+#dist05 {
+    background-color: #EFEC00;
+}
+#dist06 {
+    background-color: #F0A300;
+}
+#dist07 {
+    background-color: #EF6C00;
+}
+#dist08 {
+    background-color: #FF0000;
+}
+#dist09 {
+    background-color: #FF00CA;
+}
+#dist10 {
+    background-color: #C300FF;
+}
+#distXX {
+    background-color: #000000;
+}
+
+#scannedProduct {
+    color: black;
+}

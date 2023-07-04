@@ -1,0 +1,337 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Application</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <script src="script.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <title>Tabs con Material Design 2</title>
+</head>
+<body>
+<div class="container">
+  <ul class="tabs">
+    <li class="tab col s6"><a href="#tab0" onclick="scenaryDebug()">Debug</a></li>
+    <li class="tab col s6"><a href="#tab1" onclick="scenary1()">Pick & Place</a></li>
+    <li class="tab col s6"><a href="#tab2" onclick="scenary2()">Lift & Learn</a></li>
+    <li class="tab col s6"><a href="#tab3" onclick="scenary3()">Proximity check</a></li>
+    <li class="tab col s6"><a href="#tab4" onclick="scenary4()">Cassa Promozionale</a></li>
+    <li class="tab col s6"><a href="#tab5" onclick="scenary5()">Selettore</a></li>
+  </ul>
+  <div id="tab0" class="col s12">
+    <h4>Debug</h4>
+
+
+    <div class="slidecontainer">
+      <h1 class="mdc-typography--headline5">Intensità Luminosa</h1>
+      <input type="range" id="slider" class="mdc-slider" min="0" max="99" onchange="getSliderValue(this.value)" step="1" aria-label="Intensità Luminosa" >
+    </div>
+
+    <!-- COLOR PICK -->
+    <div id="programma-colore">
+      <h1 class="mdc-typography--headline5">Programma colore</h1>
+
+      <label for="number-select">Seleziona lo slot:</label>
+      <select id="number-select" class="mdc-select">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+      </select>
+      <script>
+        var numberSelect = document.getElementById('number-select');
+        numberSelect.addEventListener('change', function() {
+          var selectedValue = numberSelect.value;
+          selectedValue -= 1;
+          console.log(selectedValue);
+          $.post('/numSlot', { value: selectedValue });
+          document.getElementById("changeColor").innerHTML = "";
+        });
+      </script>
+
+      <label for="colorpicker">Color Picker:</label>
+      <input type="color" id="colorpicker" value="#FFFFFF" class="mdc-text-fieldinput">
+      <script>
+        var colorpicker = document.getElementById('colorpicker');
+        colorpicker.addEventListener('change', function() {
+          var hexValue = colorpicker.value;
+          console.log(hexValue);
+          $.post('/hexValue', { string: hexValue });
+          document.getElementById("changeColor").innerHTML = "";
+        });
+      </script>
+
+      <!-- Salva -->
+      <button class="mdc-button mdc-button--raised" onclick="programColor()">
+        <div class="mdc-buttonripple"></div>
+        <span class="mdc-buttonlabel">Salva Colore</span>
+      </button>
+      <script>
+        function programColor() {
+          $.post('/saveColor');
+          document.getElementById("changeColor").innerHTML = "Colore salvato";
+        }
+      </script>
+
+
+      <!-- Salva e cambia -->
+      <button class="mdc-button mdc-button--raised" onclick="programAndSaveColor()">
+        <div class="mdc-buttonripple"></div>
+        <span class="mdc-buttonlabel">Salva e Carica Colore</span>
+      </button>
+      <script>
+        function programAndSaveColor() {
+          $.post('/saveAndSetColor');
+          document.getElementById("changeColor").innerHTML = "colore salvato e cambiato!";
+        }
+      </script>
+
+      <!-- carica -->
+      <button class="mdc-button mdc-button--raised" onclick="loadColor()">
+        <div class="mdc-buttonripple"></div>
+        <span class="mdc-buttonlabel">Carica Colore</span>
+      </button>
+      <script>
+        function loadColor() {
+          $.post('/loadColor');
+          document.getElementById("changeColor").innerHTML = "colore cambiato!";
+        }
+      </script>
+      <div id="changeColor"></div>
+
+    </div>
+
+    <div>
+      <h1 class="mdc-typography--headline5">Aggiornamenti Potenziometro</h1>
+      <label for="rotaryTextArea"></label><textarea id="rotaryTextArea" name="rotaryTextArea" rows="15" cols="30" readonly></textarea>
+
+      <table>
+        <tr>
+          <td><span>Interrompi il potenziometro:     </span></td>
+          <td>
+
+            <label class="mdc-checkbox">
+
+              <input type="checkbox"
+                     class="mdc-checkbox__native-control"
+                     id="stopPollingCheckbox">
+              <div class="mdc-checkbox__background">
+                <svg class="mdc-checkbox__checkmark"
+                     viewBox="0 0 24 24">
+                  <path class="mdc-checkbox__checkmark-path"
+                        fill="none"
+                        d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                </svg>
+                <div class="mdc-checkbox__mixedmark"></div>
+              </div>
+            </label>
+
+          </td>
+        </tr>
+      </table>
+
+
+    </div>
+
+    <div>
+      <h1 class="mdc-typography--headline5">Aggiornamenti Presence Sensor</h1>
+
+      <label for="presenceSensorTextArea"></label><textarea id="presenceSensorTextArea" name="presenceSensorTextArea" rows="4" cols="50" readonly></textarea>
+      <table>
+        <tr>
+          <td><span>Interrompi il sensore di presenza:</span></td>
+          <td>
+
+            <label class="mdc-checkbox">
+              <input type="checkbox"
+                     class="mdc-checkbox__native-control"
+                     id="stopPollingCheckboxPresence">
+              <div class="mdc-checkbox__background">
+                <svg class="mdc-checkbox__checkmark"
+                     viewBox="0 0 24 24">
+                  <path class="mdc-checkbox__checkmark-path"
+                        fill="none"
+                        d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                </svg>
+                <div class="mdc-checkbox__mixedmark"></div>
+              </div>
+            </label>
+
+          </td>
+        </tr>
+      </table>
+
+    </div>
+
+    <div>
+      <h1 class="mdc-typography--headline5">Aggiornamenti Rfid</h1>
+
+      <table>
+        <tr>
+          <td id="rfid1"> N/D </td>
+          <td id="rfid2"> N/D </td>
+        </tr>
+      </table>
+
+      <table>
+        <tr>
+          <td><span>Interrompi l'RFID:     </span></td>
+          <td>
+
+            <label class="mdc-checkbox">
+
+              <input type="checkbox"
+                     class="mdc-checkbox__native-control"
+                     id="stopPollingRfid">
+              <div class="mdc-checkbox__background">
+                <svg class="mdc-checkbox__checkmark"
+                     viewBox="0 0 24 24">
+                  <path class="mdc-checkbox__checkmark-path"
+                        fill="none"
+                        d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                </svg>
+                <div class="mdc-checkbox__mixedmark"></div>
+              </div>
+            </label>
+
+          </td>
+        </tr>
+      </table>
+
+
+    </div>
+
+  </div> <!-- DEBUG -->
+  <div id="tab1" class="col s12">
+    <h4>Scenario 1 | Pick & Place</h4>
+    <table>
+      <tr>
+        <td id="scen1Img1" height="100px" width="30%"></td>
+        <td id="scen1Img2" height="100px" width="30%"></td>
+      </tr>
+      <tr>
+        <td id="scen1Desc1"></td>
+        <td id="scen1Desc2"></td>
+      </tr>
+    </table>
+  </div> <!-- SCENARIO 1 -->
+  <div id="tab2" class="col s12">
+    <h4>Scenario 2 | Lift & Learn</h4>
+    <table>
+      <tr>
+        <td id="scen2Img1" height="100px" width="30%"></td>
+        <td id="scen2Img2" height="100px" width="30%"></td>
+      </tr>
+      <tr>
+        <td id="scen2Desc1"></td>
+        <td id="scen2Desc2"></td>
+      </tr>
+    </table>
+  </div> <!-- SCENARIO 2 -->
+  <div id="tab3" class="col s12">
+    <h4>Scenario 3 | Proximity check</h4>
+    <table>
+      <tr>
+        <td id="scen3Txt1" height="100px" width="30%"><h3>Sei distante:</h3></td>
+        <td height="100px" width="30%"><h3 id="scen3Txt2"></h3></td>
+      </tr>
+    </table>
+    <table>
+      <tr id="colorsLed">
+        <td><h3>Livelli di distanza crescenti</h3></td> <!-- da blu a viola -->
+        <td id="distAB"></td>
+        <td id="dist01"></td>
+        <td id="dist02"></td>
+        <td id="dist03"></td>
+        <td id="dist04"></td>
+        <td id="dist05"></td>
+        <td id="dist06"></td>
+        <td id="dist07"></td>
+        <td id="dist08"></td>
+        <td id="dist09"></td>
+        <td id="dist10"></td>
+        <td id="distXX"></td>
+      </tr>
+    </table>
+  </div> <!-- SCENARIO 3 -->
+  <div id="tab4" class="col s12"> <!-- SCENARIO 4 -->
+    <h4>Scenario 4 | Cassa Promozionale</h4>
+    <table>
+      <tr>
+        <td>Persone entrate: </td>
+        <td id="peopleJoin"></td>
+        <td><button class="mdc-button mdc-button--raised" onclick="restartScene4()">
+          <div class="mdc-buttonripple"></div>
+          <span class="mdc-buttonlabel">Riavvia la scena</span>
+        </button></td>
+      </tr>
+      <tr>
+        <td id="scannedProduct"></td>
+        <td><label for="checkOutTextArea"></label><textarea id="checkOutTextArea" name="checkOutTextArea" rows="15" cols="30" readonly></textarea></td>
+        <td id="winProduct"></td>
+      </tr>
+    </table>
+
+  </div> <!-- SCENARIO 4 -->
+  <div id="tab5" class="col s12">
+    <h4>Scenario 5 | Selettore Tv</h4>
+
+    <table>
+      <tr>
+        <td><h5>Seleziona tramite il potenziometro o le frecce</h5></td>
+        <td><h5>Imposta i led in tempo reale: </h5></td>
+        <td>
+          <label class="mdc-checkbox">
+            <input type="checkbox"
+                   class="mdc-checkbox__native-control"
+                   id="realTimeSelector">
+            <div class="mdc-checkbox__background">
+              <svg class="mdc-checkbox__checkmark"
+                   viewBox="0 0 24 24">
+                <path class="mdc-checkbox__checkmark-path"
+                      fill="none"
+                      d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+              </svg>
+              <div class="mdc-checkbox__mixedmark"></div>
+            </div>
+          </label>
+        </td>
+      </tr>
+      <tr>
+        <td id="imgSelectorTable"><img src="imgs/img0.jpg" alt="image" id="imgSelector" width="597" height="295"></td>
+      </tr>
+    </table>
+    <button onclick="setScen5ClickSave()">Salva e invia output</button>
+  </div> <!-- SCENARIO 5 -->
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var tabs = document.querySelectorAll('.tabs');
+    M.Tabs.init(tabs);
+  });
+</script>
+</body>
+</html>
