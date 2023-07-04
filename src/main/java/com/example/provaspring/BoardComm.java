@@ -40,56 +40,58 @@ public class BoardComm implements Runnable {
                 while (serialPort.bytesAvailable() == -1) {
                     System.out.println("la serialPort seriale non è stata aperta correttamente! [nuovo tentativo in 1s]");
                     Thread.sleep(1000);
+                    serialPort.closePort();
                     serialPort.openPort();
                 }
 
                 while (serialPort.bytesAvailable() == 0) {
                     Thread.sleep(200);
                 }
-                byte[] readBuffer = new byte[serialPort.bytesAvailable()];
-                int numRead = serialPort.readBytes(readBuffer, readBuffer.length);
-                bufferString = byteToString(readBuffer);
-                System.out.println("Read " + numRead + " bytes.");
-                System.out.println("byte To String: " + bufferString);
+
+                if (serialPort.isOpen() && serialPort.bytesAvailable() > 0) {
+
+                    byte[] readBuffer = new byte[serialPort.bytesAvailable()];
+                    int numRead = serialPort.readBytes(readBuffer, readBuffer.length);
+                    bufferString = byteToString(readBuffer);
+                    System.out.println("Read " + numRead + " bytes.");
+                    System.out.println("byte To String: " + bufferString);
 
 
+                    String arr[] = bufferString.split("\n");
 
-                String arr[] = bufferString.split("\n");
+                    for (int i = 0; i < arr.length; i++) {
+                        if (arr[i].contains("X005B[Dz="))
+                            presenceSensor = arr[i];
 
-                for (int i = 0; i < arr.length; i++) {
-                    if (arr[i].contains("X005B[Dz="))
-                        presenceSensor = arr[i];
+                        if (arr[i].contains("XR[P")) {
+                            rfidSensor = arr[i];
+                            String rfidArr[] = rfidSensor.split("\n");
+                            for (int j = 0; j < rfidArr.length; j++) {
+                                if (rfidArr[j].contains("XR[PB001]"))
+                                    RfidSensList += "1D-";
 
-                    if (arr[i].contains("XR[P")) {
-                        rfidSensor = arr[i];
-                        String rfidArr[] = rfidSensor.split("\n");
-                        for (int j = 0; j < rfidArr.length; j++) {
-                            if (rfidArr[j].contains("XR[PB001]"))
-                                RfidSensList += "1D-";
+                                if (rfidArr[j].contains("XR[PU001]"))
+                                    RfidSensList += "1U-";
 
-                            if (rfidArr[j].contains("XR[PU001]"))
-                                RfidSensList += "1U-";
+                                if (rfidArr[j].contains("XR[PB002]"))
+                                    RfidSensList += "2D-";
 
-                            if (rfidArr[j].contains("XR[PB002]"))
-                                RfidSensList += "2D-";
+                                if (rfidArr[j].contains("XR[PU002]"))
+                                    RfidSensList += "2U-";
+                            }
+                        }
 
-                            if (rfidArr[j].contains("XR[PU002]"))
-                                RfidSensList += "2U-";
+                        if (arr[i].contains("X001A")) {
+                            String[] comandi = bufferString.split("\n");
+                            for (int j = 0; j < comandi.length; j++)
+                                inviaComando(comandi[j]);
+                        }
+
+                        if (arr[i].contains("X002B[Dr=")) {
+                            rotaryButton = arr[i];
                         }
                     }
-
-                    if (arr[i].contains("X001A")) {
-                        String[] comandi = bufferString.split("\n");
-                        for (int j = 0; j < comandi.length; j++)
-                            inviaComando(comandi[j]);
-                    }
-
-                    if (arr[i].contains("X002B[Dr=")) {
-                        rotaryButton = arr[i];
-                    }
                 }
-
-
 
                 //Thread.sleep(100);
             }
