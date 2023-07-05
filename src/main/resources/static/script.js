@@ -121,6 +121,7 @@ function restartScene4() {
 
     document.getElementById("scannedProduct").innerHTML = "";
     document.getElementById("checkOutTextArea").value = ("");
+    document.getElementById("winProduct").innerHTML = "";
 }
 
 function startPolling() {
